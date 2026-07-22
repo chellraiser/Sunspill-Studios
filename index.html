@@ -3,150 +3,365 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fullscreen Overlay Navbar (Corrected)</title>
+    <title>SunSpill Glass</title>
+
     <style>
-        /*
-        ========================================
-        CSS Custom Properties (Dramatic Theme)
-        ========================================
-        */
         :root {
             --color-background: #faf7f0;
             --color-text-primary: #2b2b2b;
             --color-text-light: #7a8b6f;
             --color-overlay-bg: #faf7f0;
-            --color-overlay-link-hover: ##eb8f6e;
-            
+            --color-overlay-link-hover: #eb8f6e;
+
             --z-index-header: 1000;
-            --z-index-overlay: 1001; /* Must be higher than header */
+            --z-index-overlay: 1001;
 
-            --font-family-sans-serif: "Lato", Lato, sans-serif;
+            --font-family-sans-serif: "Lato", sans-serif;
             --font-weight-bold: 700;
-            --transition-speed: 0.5s;
-            --transition-curve: cubic-bezier(0.2, 1, 0.3, 1);
-        }
-        
-        *, *::before, *::after { box-sizing: border-box; }
-        html, body { margin: 0; }
-
-        body { font-family: var(--font-family-sans-serif); background-color: var(--color-background); color: var(--color-text-primary); }
-        .content { height: 200vh; max-width: 800px; margin: 0 auto; padding: 100px 1.5rem; }
-        body.fullscreen-menu-is-open { overflow: hidden; }
-
-        .main-header {
-            position: fixed; top: 0; left: 0; width: 100%;
-            z-index: var(--z-index-header); /* Lower z-index */
-            display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;
+            --transition-speed: .5s;
+            --transition-curve: cubic-bezier(.2,1,.3,1);
         }
 
-        .header__brand { font-weight: var(--font-weight-bold); color: var(--color-text-primary); text-decoration: none; }
-        .icon-button { display: flex; align-items: center; justify-content: center; border: none; background: transparent; padding: 0.5rem; cursor: pointer; color: var(--color-text-primary); }
-        .icon-button svg { width: 32px; height: 32px; }
-        .fullscreen-menu__close-btn { color: var(--color-text-light); }
-        
-        .fullscreen-menu {
-            position: fixed; top: 0; left: 0;
-            z-index: var(--z-index-overlay); /* Higher z-index */
-            width: 100%; height: 100vh; background-color: var(--color-overlay-bg);
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; visibility: hidden; transform: scale(1.1);
-            transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
+        *,
+        *::before,
+        *::after{
+            box-sizing:border-box;
         }
 
-        .fullscreen-menu.is-open { opacity: 1; visibility: visible; transform: scale(1); }
-        .fullscreen-menu__list { text-align: center; list-style: none; margin: 0; padding: 0; }
-        .fullscreen-menu__item { overflow: hidden; }
-        .fullscreen-menu__link {
-            display: inline-block; padding: 0.5rem; font-size: 2.5rem;
-            font-weight: var(--font-weight-bold); color: var(--color-text-light); text-decoration: none;
-            opacity: 0; transform: translateY(100%);
-            transition: opacity var(--transition-speed) var(--transition-curve), 
-                        transform var(--transition-speed) var(--transition-curve),
-                        color 0.2s ease;
+        html,
+        body{
+            margin:0;
         }
-        .fullscreen-menu__link:hover { color: var(--color-overlay-link-hover); }
-        .fullscreen-menu.is-open .fullscreen-menu__link { opacity: 1; transform: translateY(0); }
-        .fullscreen-menu.is-open .fullscreen-menu__item:nth-child(1) .fullscreen-menu__link { transition-delay: 0.1s; }
-        .fullscreen-menu.is-open .fullscreen-menu__item:nth-child(2) .fullscreen-menu__link { transition-delay: 0.2s; }
-        .fullscreen-menu.is-open .fullscreen-menu__item:nth-child(3) .fullscreen-menu__link { transition-delay: 0.3s; }
-        .fullscreen-menu.is-open .fullscreen-menu__item:nth-child(4) .fullscreen-menu__link { transition-delay: 0.4s; }
 
-        @media (min-width: 768px) { .fullscreen-menu__link { font-size: 4rem; } }
+        body{
+            font-family:var(--font-family-sans-serif);
+            background:var(--color-background);
+            color:var(--color-text-primary);
+        }
+
+        body.fullscreen-menu-is-open{
+            overflow:hidden;
+        }
+
+        /* ================= HEADER ================= */
+
+        .main-header{
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            z-index:var(--z-index-header);
+
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+
+            padding:1rem 2rem;
+
+            background:rgba(250,247,240,.95);
+            backdrop-filter:blur(12px);
+            border-bottom:1px solid rgba(0,0,0,.08);
+        }
+
+        .header__brand{
+            display:flex;
+            align-items:center;
+            text-decoration:none;
+        }
+
+        .header__brand img{
+            height:60px;
+            width:auto;
+            display:block;
+        }
+
+        .icon-button{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            border:none;
+            background:none;
+            cursor:pointer;
+            padding:.5rem;
+
+            color:var(--color-text-primary);
+        }
+
+        .icon-button svg{
+            width:34px;
+            height:34px;
+        }
+
+        /* ================= MENU ================= */
+
+        .fullscreen-menu{
+            position:fixed;
+            inset:0;
+            z-index:var(--z-index-overlay);
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+
+            background:var(--color-overlay-bg);
+
+            opacity:0;
+            visibility:hidden;
+            transform:translateY(-20px);
+
+            transition:
+                opacity .35s ease,
+                transform .35s ease,
+                visibility .35s ease;
+        }
+
+        .fullscreen-menu.is-open{
+            opacity:1;
+            visibility:visible;
+            transform:translateY(0);
+        }
+
+        .fullscreen-menu__close-btn{
+            position:absolute;
+            top:1.5rem;
+            right:2rem;
+
+            color:var(--color-text-light);
+        }
+
+        .fullscreen-menu__list{
+            list-style:none;
+            padding:0;
+            margin:0;
+            text-align:center;
+        }
+
+        .fullscreen-menu__item{
+            overflow:hidden;
+        }
+
+        .fullscreen-menu__link{
+            display:inline-block;
+            padding:.6rem;
+
+            font-size:2.6rem;
+            font-weight:700;
+            text-decoration:none;
+
+            color:var(--color-text-light);
+
+            opacity:0;
+            transform:translateY(100%);
+
+            transition:
+                opacity var(--transition-speed) var(--transition-curve),
+                transform var(--transition-speed) var(--transition-curve),
+                color .25s ease;
+        }
+
+        .fullscreen-menu__link:hover{
+            color:var(--color-overlay-link-hover);
+        }
+
+        .fullscreen-menu.is-open .fullscreen-menu__link{
+            opacity:1;
+            transform:translateY(0);
+        }
+
+        .fullscreen-menu.is-open .fullscreen-menu__item:nth-child(1) .fullscreen-menu__link{
+            transition-delay:.08s;
+        }
+
+        .fullscreen-menu.is-open .fullscreen-menu__item:nth-child(2) .fullscreen-menu__link{
+            transition-delay:.16s;
+        }
+
+        .fullscreen-menu.is-open .fullscreen-menu__item:nth-child(3) .fullscreen-menu__link{
+            transition-delay:.24s;
+        }
+
+        .fullscreen-menu.is-open .fullscreen-menu__item:nth-child(4) .fullscreen-menu__link{
+            transition-delay:.32s;
+        }
+
+        /* ================= HERO ================= */
+
+        .content{
+            max-width:1200px;
+            margin:auto;
+            padding:150px 2rem;
+            min-height:200vh;
+        }
+
+        h1{
+            font-size:4rem;
+            margin-bottom:1rem;
+        }
+
+        @media(max-width:768px){
+
+            .main-header{
+                padding:1rem;
+            }
+
+            .header__brand img{
+                height:48px;
+            }
+
+            .fullscreen-menu__link{
+                font-size:2rem;
+            }
+
+            h1{
+                font-size:2.5rem;
+            }
+        }
+
+        .visually-hidden{
+            position:absolute;
+            width:1px;
+            height:1px;
+            margin:-1px;
+            padding:0;
+            overflow:hidden;
+            clip:rect(0,0,0,0);
+            border:0;
+        }
     </style>
 </head>
+
 <body>
-    <header class="main-header">
-        <img src="assets/logo.png" alt="SunSpill Logo">
-        <button class="icon-button" id="menu-toggle-btn" aria-label="Open menu" aria-haspopup="true" aria-controls="fullscreen-menu" aria-expanded="false">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" /></svg>
-        </button>
-    </header>
 
-    <nav class="fullscreen-menu" id="fullscreen-menu" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="menu-label">
-        <span id="menu-label" class="visually-hidden">Main Menu</span>
-        <button class="icon-button fullscreen-menu__close-btn" id="menu-close-btn" aria-label="Close menu" style="position: absolute; top: 1.5rem; right: 1.5rem;">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" /></svg>
-        </button>
-        <ul class="fullscreen-menu__list">
-            <li class="fullscreen-menu__item"><a href="#" class="fullscreen-menu__link">About Us</a></li>
-            <li class="fullscreen-menu__item"><a href="#" class="fullscreen-menu__link">Shop Collections</a></li>
-            <li class="fullscreen-menu__item"><a href="#" class="fullscreen-menu__link">Shop Clearance</a></li>
-            <li class="fullscreen-menu__item"><a href="#" class="fullscreen-menu__link">Custom Requests</a></li>
-        </ul>
-    </nav>
-    <main class="content">
-        <h1>this will be a hero soon</h1>
-        <p>meow meow meow</p>        
-    </main>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const menuToggleBtn = document.getElementById('menu-toggle-btn');
-        const menuCloseBtn = document.getElementById('menu-close-btn');
-        const menu = document.getElementById('fullscreen-menu');
-        const menuLinks = menu.querySelectorAll('.fullscreen-menu__link'); // Get all links
-        
-        if (!menuToggleBtn || !menuCloseBtn || !menu) return;
+<header class="main-header">
 
-        let lastActiveElement;
-        const focusableElements = menu.querySelectorAll('a[href], button');
-        const firstFocusableElement = focusableElements[0];
-        const lastFocusableElement = focusableElements[focusableElements.length - 1];
-        
-        function openMenu() { /* Unchanged */
-            lastActiveElement = document.activeElement;
-            document.body.classList.add('fullscreen-menu-is-open');
-            menu.classList.add('is-open');
-            menu.setAttribute('aria-hidden', 'false');
-            menuToggleBtn.setAttribute('aria-expanded', 'true');
-            firstFocusableElement.focus();
-        }
+    <a href="index.html" class="header__brand">
+        <img src="assets/logo.png" alt="SunSpill Glass">
+    </a>
 
-        function closeMenu() { /* Unchanged */
-            document.body.classList.remove('fullscreen-menu-is-open');
-            menu.classList.remove('is-open');
-            menu.setAttribute('aria-hidden', 'true');
-            menuToggleBtn.setAttribute('aria-expanded', 'false');
-            if (lastActiveElement) { lastActiveElement.focus(); }
-        }
-        
-        // --- Event Listeners ---
-        menuToggleBtn.addEventListener('click', openMenu);
-        menuCloseBtn.addEventListener('click', closeMenu);
-        
-        // Add a listener to each menu link to close the menu on click
-        menuLinks.forEach(link => {
-            link.addEventListener('click', closeMenu);
-        });
+    <button class="icon-button"
+        id="menu-toggle-btn"
+        aria-label="Open menu"
+        aria-haspopup="true"
+        aria-controls="fullscreen-menu"
+        aria-expanded="false">
 
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu.classList.contains('is-open')) closeMenu(); });
-        
-        menu.addEventListener('keydown', (e) => { 
-            if (e.key !== 'Tab') return;
-            if (e.shiftKey) { if (document.activeElement === firstFocusableElement) { lastFocusableElement.focus(); e.preventDefault(); }
-            } else { if (document.activeElement === lastFocusableElement) { firstFocusableElement.focus(); e.preventDefault(); } }
-        });
+        <svg viewBox="0 0 24 24">
+            <path fill="currentColor"
+                d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"/>
+        </svg>
+
+    </button>
+
+</header>
+
+<nav class="fullscreen-menu"
+    id="fullscreen-menu"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="menu-label">
+
+    <span id="menu-label" class="visually-hidden">Main Menu</span>
+
+    <button
+        class="icon-button fullscreen-menu__close-btn"
+        id="menu-close-btn"
+        aria-label="Close menu">
+
+        <svg viewBox="0 0 24 24">
+            <path fill="currentColor"
+                d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+        </svg>
+
+    </button>
+
+    <ul class="fullscreen-menu__list">
+
+        <li class="fullscreen-menu__item">
+            <a href="#" class="fullscreen-menu__link">About Us</a>
+        </li>
+
+        <li class="fullscreen-menu__item">
+            <a href="#" class="fullscreen-menu__link">Shop Collections</a>
+        </li>
+
+        <li class="fullscreen-menu__item">
+            <a href="#" class="fullscreen-menu__link">Shop Clearance</a>
+        </li>
+
+        <li class="fullscreen-menu__item">
+            <a href="#" class="fullscreen-menu__link">Custom Requests</a>
+        </li>
+
+    </ul>
+
+</nav>
+
+<main class="content">
+
+    <h1>This will be a hero soon.</h1>
+    <p>Meow meow meow.</p>
+
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const menu = document.getElementById("fullscreen-menu");
+    const openBtn = document.getElementById("menu-toggle-btn");
+    const closeBtn = document.getElementById("menu-close-btn");
+    const links = document.querySelectorAll(".fullscreen-menu__link");
+
+    let lastFocused;
+
+    function openMenu(){
+
+        lastFocused = document.activeElement;
+
+        document.body.classList.add("fullscreen-menu-is-open");
+
+        menu.classList.add("is-open");
+
+        menu.setAttribute("aria-hidden","false");
+
+        openBtn.setAttribute("aria-expanded","true");
+
+        closeBtn.focus();
+
+    }
+
+    function closeMenu(){
+
+        document.body.classList.remove("fullscreen-menu-is-open");
+
+        menu.classList.remove("is-open");
+
+        menu.setAttribute("aria-hidden","true");
+
+        openBtn.setAttribute("aria-expanded","false");
+
+        if(lastFocused) lastFocused.focus();
+
+    }
+
+    openBtn.addEventListener("click",openMenu);
+    closeBtn.addEventListener("click",closeMenu);
+
+    links.forEach(link=>{
+        link.addEventListener("click",closeMenu);
     });
-    </script>
-    <style>.visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }</style>
+
+    document.addEventListener("keydown",(e)=>{
+
+        if(e.key==="Escape" && menu.classList.contains("is-open")){
+            closeMenu();
+        }
+
+    });
+
+});
+</script>
+
 </body>
 </html>
