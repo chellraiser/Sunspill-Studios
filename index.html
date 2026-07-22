@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SunSpill Glass</title>
+
+    <style>
+        :root {
+            --color-background: #faf7f0;
+            --color-text-primary: #2b2b2b;
+            --color-text-light: #7a8b6f;
+            --color-overlay-bg: #faf7f0;
+            --color-overlay-link-hover: #eb8f6e;
+
+            --z-index-header: 1000;
+            --z-index-overlay: 1001;
+
+            --font-family-sans-serif: "Lato", sans-serif;
+            --font-weight-bold: 700;
+            --transition-speed: .5s;
+            --transition-curve: cubic-bezier(.2,1,.3,1);
+        }
+
+        *,
+        *::before,
+        *::after{
+            box-sizing:border-box;
+        }
+
+        html,
+        body{
+            margin:0;
+        }
+
+        body{
+            font-family:var(--font-family-sans-serif);
+            background:var(--color-background);
+            color:var(--color-text-primary);
+        }
+
+        body.fullscreen-menu-is-open{
+            overflow:hidden;
+        }
+
+        /* ================= HEADER ================= */
+
+        .main-header{
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            z-index:var(--z-index-header);
+
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+
+            padding:1rem 2rem;
+
+            background:rgba(250,247,240,.95);
+            backdrop-filter:blur(12px);
+            border-bottom:1px solid rgba(0,0,0,.08);
+        }
+
+        .header__brand{
+            display:flex;
+            align-items:center;
+            text-decoration:none;
+        }
+
+        .header__brand img{
+            height:100px;
+            width:auto;
+            display:block;
+        }
+
+        .icon-button{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            border:none;
+            background:none;
+            cursor:pointer;
+            padding:.5rem;
+
+            color:var(--color-text-primary);
+        }
+
+        .icon-button svg{
+            width:34px;
+            height:34px;
+        }
+
+        /* ================= MENU ================= */
+
+        .fullscreen-menu{
+            position:fixed;
+            inset:0;
+            z-index:var(--z-index-overlay);
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+
+            background:var(--color-overlay-bg);
+
+            opacity:0;
+            visibility:hidden;
+            transform:translateY(-20px);
+
+            transition:
+                opacity .35s ease,
+                transform .35s ease,
+                visibility .35s ease;
+        }
+
+        .fullscreen-menu.is-open{
+            opacity:1;
+            visibility:visible;
+            transform:translateY(0);
+        }
+
+        .fullscreen-menu__close-btn{
+            position:absolute;
+            top:1.5rem;
+            right:2rem;
+
+            color:var(--color-text-light);
+        }
+
+        .fullscreen-menu__list{
+            list-style:none;
+            padding:0;
+            margin:0;
+            text-align:center;
+        }
+
+        .fullscreen-menu__item{
+            overflow:hidden;
+        }
+
+        .fullscreen-menu__link{
+            display:inline-block;
+            padding:.6rem;
+
+            font-size:2.6rem;
+            font-weight:700;
+            text-decoration:none;
+
+            color:var(--color-text-light);
+
+            opacity:0;
+            transform:translateY(100%);
+
+            transition:
+                opacity var(--transition-speed) var(--transition-curve),
+                transform var(--transition-speed) var(--transition-curve),
+                color .25s ease;
+        }
+
+        .fullscreen-menu__link:hover{
+            color:var(--color-overlay-link-hover);
+        }
+
+        .fullscreen-menu.is-open .fullscreen-menu__link{
+            opacity:1;
+            transform:translateY(0);
+        }
+
+        .fullscreen-menu.is-open .fullscreen-menu__item:nth-child(1) .fullscreen-menu__link{
+            transition-delay:.08s;
+        }
+
+        .fullscreen-menu.is-open .fullscreen-menu__item:nth-child(2) .fullscreen-menu__link{
+            transition-delay:.16s;
+        }
+
+        .fullscreen-menu.is-open .fullscreen-menu__item:nth-child(3) .fullscreen-menu__link{
+            transition-delay:.24s;
+        }
+
+        .fullscreen-menu.is-open .fullscreen-menu__item:nth-child(4) .fullscreen-menu__link{
+            transition-delay:.32s;
+        }
+
+        /* ================= HERO ================= */
+
+        .content{
+            max-width:1200px;
+            margin:auto;
+            padding:150px 2rem;
+            min-height:200vh;
+        }
+
+        h1{
+            font-size:4rem;
+            margin-bottom:1rem;
+        }
+
+        @media(max-width:768px){
+
+            .main-header{
+                padding:1rem;
+            }
+
+            .header__brand img{
+                height:48px;
+            }
+
+            .fullscreen-menu__link{
+                font-size:2rem;
+            }
+
+            h1{
+                font-size:2.5rem;
+            }
+        }
+
+        .visually-hidden{
+            position:absolute;
+            width:1px;
+            height:1px;
+            margin:-1px;
+            padding:0;
+            overflow:hidden;
+            clip:rect(0,0,0,0);
+            border:0;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="main-header">
+
+    <a href="index.html" class="header__brand">
+        <img src="assets/logo.png" alt="SunSpill Glass">
+    </a>
+
+    <button class="icon-button"
+        id="menu-toggle-btn"
+        aria-label="Open menu"
+        aria-haspopup="true"
+        aria-controls="fullscreen-menu"
+        aria-expanded="false">
+
+        <svg viewBox="0 0 24 24">
+            <path fill="currentColor"
+                d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"/>
+        </svg>
+
+    </button>
+
+</header>
+
+<nav class="fullscreen-menu"
+    id="fullscreen-menu"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="menu-label">
+
+    <span id="menu-label" class="visually-hidden">Main Menu</span>
+
+    <button
+        class="icon-button fullscreen-menu__close-btn"
+        id="menu-close-btn"
+        aria-label="Close menu">
+
+        <svg viewBox="0 0 24 24">
+            <path fill="currentColor"
+                d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+        </svg>
+
+    </button>
+
+    <ul class="fullscreen-menu__list">
+
+        <li class="fullscreen-menu__item">
+            <a href="#" class="fullscreen-menu__link">About Us</a>
+        </li>
+
+        <li class="fullscreen-menu__item">
+            <a href="#" class="fullscreen-menu__link">Shop Collections</a>
+        </li>
+
+        <li class="fullscreen-menu__item">
+            <a href="#" class="fullscreen-menu__link">Shop Clearance</a>
+        </li>
+
+        <li class="fullscreen-menu__item">
+            <a href="#" class="fullscreen-menu__link">Custom Requests</a>
+        </li>
+
+    </ul>
+
+</nav>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --hero-height:100vh;
+    --hero-text:#F8F4EE;
+    --hero-overlay:rgba(25,25,20,.45);
+
+    --button-bg:#f8f4ee;
+    --button-text:#374132;
+    --button-hover:#d7b494;
+
+    /* Replace with your own image */
+    --hero-image:url("assets/hero.gif");
+}
+
+.hero{
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+
+    min-height:var(--hero-height);
+    overflow:hidden;
+
+    background-image:var(--hero-image);
+    background-size:cover;
+    background-position:center;
+}
+
+.hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:var(--hero-overlay);
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    max-width:850px;
+    padding:2rem;
+}
+
+.hero h1{
+    margin:0;
+    font-family:"Cormorant Garamond", serif;
+    font-size:clamp(3.5rem,8vw,6.5rem);
+    font-weight:600;
+    line-height:.95;
+    letter-spacing:.02em;
+    color:var(--hero-text);
+}
+
+.hero p{
+    margin:2rem auto;
+    max-width:650px;
+
+    font-family:"Lato",sans-serif;
+    font-size:1.15rem;
+    line-height:1.8;
+    color:rgba(248,244,238,.9);
+}
+
+.hero-btn{
+    display:inline-block;
+
+    padding:16px 42px;
+
+    background:var(--button-bg);
+    color:var(--button-text);
+
+    font-family:"Lato",sans-serif;
+    font-weight:700;
+    text-decoration:none;
+
+    border-radius:999px;
+
+    transition:.3s;
+}
+
+.hero-btn:hover{
+    background:var(--button-hover);
+    transform:translateY(-3px);
+}
+</style>
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h1>Handcrafted<br>Stained Glass</h1>
+
+        <p>
+            Timeless stained glass artwork created by hand—
+            from sun catchers and florals to custom commissions
+            designed to bring light into every space.
+        </p>
+
+        <a href="collections.html" class="hero-btn">
+            Explore Collections
+        </a>
+
+    </div>
+
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const menu = document.getElementById("fullscreen-menu");
+    const openBtn = document.getElementById("menu-toggle-btn");
+    const closeBtn = document.getElementById("menu-close-btn");
+    const links = document.querySelectorAll(".fullscreen-menu__link");
+
+    let lastFocused;
+
+    function openMenu(){
+
+        lastFocused = document.activeElement;
+
+        document.body.classList.add("fullscreen-menu-is-open");
+
+        menu.classList.add("is-open");
+
+        menu.setAttribute("aria-hidden","false");
+
+        openBtn.setAttribute("aria-expanded","true");
+
+        closeBtn.focus();
+
+    }
+
+    function closeMenu(){
+
+        document.body.classList.remove("fullscreen-menu-is-open");
+
+        menu.classList.remove("is-open");
+
+        menu.setAttribute("aria-hidden","true");
+
+        openBtn.setAttribute("aria-expanded","false");
+
+        if(lastFocused) lastFocused.focus();
+
+    }
+
+    openBtn.addEventListener("click",openMenu);
+    closeBtn.addEventListener("click",closeMenu);
+
+    links.forEach(link=>{
+        link.addEventListener("click",closeMenu);
+    });
+
+    document.addEventListener("keydown",(e)=>{
+
+        if(e.key==="Escape" && menu.classList.contains("is-open")){
+            closeMenu();
+        }
+
+    });
+
+});
+</script>
+
+</body>
+</html>
