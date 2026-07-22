@@ -466,6 +466,116 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
+    <!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --hero-height:100vh;
+    --hero-text:#F8F4EE;
+    --hero-overlay:rgba(25,25,20,.45);
+
+    --button-bg:#f8f4ee;
+    --button-text:#374132;
+    --button-hover:#d7b494;
+
+    /* Replace with your own image */
+    --hero-image:url("assets/hero.jpg");
+}
+
+.hero{
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+
+    min-height:var(--hero-height);
+    overflow:hidden;
+
+    background-image:var(--hero-image);
+    background-size:cover;
+    background-position:center;
+}
+
+.hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:var(--hero-overlay);
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    max-width:850px;
+    padding:2rem;
+}
+
+.hero h1{
+    margin:0;
+    font-family:"Cormorant Garamond", serif;
+    font-size:clamp(3.5rem,8vw,6.5rem);
+    font-weight:600;
+    line-height:.95;
+    letter-spacing:.02em;
+    color:var(--hero-text);
+}
+
+.hero p{
+    margin:2rem auto;
+    max-width:650px;
+
+    font-family:"Lato",sans-serif;
+    font-size:1.15rem;
+    line-height:1.8;
+    color:rgba(248,244,238,.9);
+}
+
+.hero-btn{
+    display:inline-block;
+
+    padding:16px 42px;
+
+    background:var(--button-bg);
+    color:var(--button-text);
+
+    font-family:"Lato",sans-serif;
+    font-weight:700;
+    text-decoration:none;
+
+    border-radius:999px;
+
+    transition:.3s;
+}
+
+.hero-btn:hover{
+    background:var(--button-hover);
+    transform:translateY(-3px);
+}
+</style>
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h1>Handcrafted<br>Stained Glass</h1>
+
+        <p>
+            Timeless stained glass artwork created by hand—
+            from sun catchers and florals to custom commissions
+            designed to bring light into every space.
+        </p>
+
+        <a href="collections.html" class="hero-btn">
+            Explore Collections
+        </a>
+
+    </div>
+
+</section>
 
 </body>
 </html>
